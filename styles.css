@@ -1,0 +1,109 @@
+:root {
+  --bg-a: #f8d8ea;
+  --bg-b: #e7f2ff;
+  --panel: #ffffffdd;
+  --text: #2d2140;
+  --hair: #32283b;
+  --skin: #ffdcca;
+  --coat: #17151e;
+  --fx: #ff5fa4;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #fff7fc, transparent 40%), linear-gradient(130deg, var(--bg-a), var(--bg-b));
+}
+.app { min-height: 100vh; display: grid; grid-template-columns: 1fr 420px; }
+.stage { display: grid; place-items: center; padding: 1.5rem; }
+
+.avatar-card {
+  width: min(86vw, 520px);
+  aspect-ratio: 3 / 4;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 28px 50px #00000026;
+  animation: breathe 4.2s ease-in-out infinite;
+}
+.office-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(#e6edf7, #dce7f4);
+}
+.office-bg::before {
+  content: "";
+  position: absolute;
+  inset: 16% 10% 14%;
+  border-radius: 14px;
+  background: linear-gradient(to right, #f9fbff 0 31%, #e3ebf5 31% 34%, #f9fbff 34% 66%, #dce6f3 66% 69%, #f9fbff 69%);
+}
+.girl { position: absolute; inset: 0; }
+.hair {
+  position: absolute; width: 34%; height: 24%; left: 33%; top: 17%;
+  border-radius: 40% 40% 44% 44%; background: var(--hair); z-index: 2;
+}
+.head {
+  position: absolute; width: 24%; height: 21%; left: 38%; top: 21%;
+  border-radius: 42% 42% 48% 48%; background: var(--skin); z-index: 3;
+}
+.eyes { display: flex; justify-content: space-around; margin-top: 39%; }
+.eyes span {
+  width: 10px; height: 10px; border-radius: 50%; background: #1c1628;
+  animation: blink 5s infinite;
+}
+.brows { display: flex; justify-content: space-around; margin-top: -4px; }
+.brows span { width: 16px; height: 3px; border-radius: 2px; background: #43314a; }
+.mouth {
+  width: 34px; height: 18px; border-bottom: 3px solid #a54b71; border-radius: 0 0 30px 30px;
+  margin: 18px auto 0;
+}
+.body {
+  position: absolute; width: 33%; height: 45%; left: 33.5%; bottom: 10%;
+  border-radius: 18px 18px 10px 10px;
+  background: linear-gradient(var(--coat), #0e0c13);
+}
+.fx {
+  position: absolute; right: 10px; top: 8px; font-size: 30px; z-index: 5;
+  animation: pop 1.6s ease-in-out infinite;
+}
+.voice-wave {
+  position: absolute; left: 14px; bottom: 16px; z-index: 5; display: none; gap: 3px; align-items: end;
+}
+.voice-wave span { width: 5px; background: #fff; border-radius: 8px; animation: wave 0.9s infinite; }
+.voice-wave span:nth-child(1) { height: 10px; }
+.voice-wave span:nth-child(2) { height: 18px; animation-delay: 0.1s; }
+.voice-wave span:nth-child(3) { height: 13px; animation-delay: 0.2s; }
+.voice-wave.on { display: flex; }
+
+.panel { background: var(--panel); backdrop-filter: blur(8px); padding: 1rem; border-left: 1px solid #fff; }
+h1 { margin: 0; }
+.subtitle { margin: .4rem 0 .8rem; color: #5b4986; }
+.status { background: #fff; border-radius: 12px; padding: .65rem .8rem; margin-bottom: .7rem; }
+.status p { margin: .3rem 0; }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .6rem; }
+button { border: 0; border-radius: 10px; padding: .66rem; cursor: pointer; font-weight: 600; background: #f1efff; }
+button:hover { transform: translateY(-1px); }
+.primary { width: 100%; margin-top: .4rem; color: #fff; background: linear-gradient(90deg, #ff57a6, #7d78ff); }
+textarea { width: 100%; border: 1px solid #ddd5f2; border-radius: 10px; padding: .7rem; font-family: inherit; }
+.chat-log { margin-top: .7rem; background: #fff; border-radius: 10px; min-height: 180px; max-height: 280px; overflow: auto; padding: .6rem; display: grid; gap: .45rem; }
+.msg { padding: .45rem .55rem; border-radius: 8px; font-size: .92rem; }
+.msg.user { background: #eef6ff; }
+.msg.ai { background: #ffe6f2; }
+
+.mood-shy .mouth { width: 20px; height: 12px; }
+.mood-thinking .mouth { transform: rotate(-8deg); width: 25px; }
+.mood-excited .mouth { border: 2px solid #a54b71; border-top: 0; height: 24px; width: 30px; }
+.mood-sad .mouth { border-bottom-color: #6e5068; transform: rotate(180deg); margin-top: 22px; }
+
+@keyframes blink { 0%,47%,52%,100% { transform: scaleY(1);} 49%,50% { transform: scaleY(0.12);} }
+@keyframes pop { 0%,100% { transform: scale(1) translateY(0);} 50% { transform: scale(1.15) translateY(-2px);} }
+@keyframes breathe { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-6px);} }
+@keyframes wave { 0%,100% { transform: scaleY(1);} 50% { transform: scaleY(1.6);} }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .panel { border-left: 0; border-top: 1px solid #fff; }
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aditee AI Girl</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="stage">
+        <div id="avatarCard" class="avatar-card mood-happy">
+          <div class="office-bg"></div>
+          <div class="girl">
+            <div class="hair"></div>
+            <div class="head">
+              <div class="eyes"><span></span><span></span></div>
+              <div class="brows"><span></span><span></span></div>
+              <div class="mouth" id="mouth"></div>
+            </div>
+            <div class="body"></div>
+          </div>
+          <div class="fx" id="emotionFx">💖</div>
+          <div class="voice-wave" id="voiceWave"><span></span><span></span><span></span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h1>Aditee AI Virtual Girl</h1>
+        <p class="subtitle">Lifelike animation • endless style • emotions • voice listening + cute voice answers</p>
+
+        <div class="status">
+          <p><strong>Emotion:</strong> <span id="moodLabel">Happy</span></p>
+          <p><strong>Style:</strong> <span id="styleLabel">Office Elegant</span></p>
+          <p><strong>Listening:</strong> <span id="listenLabel">Off</span></p>
+        </div>
+
+        <div class="controls">
+          <button id="styleBtn">✨ Next style</button>
+          <button id="moodBtn">😊 Next emotion</button>
+          <button id="listenBtn">🎤 Start listening</button>
+          <button id="speakBtn">🫧 Cute voice demo</button>
+        </div>
+
+        <textarea id="chatInput" rows="3" placeholder="Talk to Aditee AI..."></textarea>
+        <button id="sendBtn" class="primary">Send</button>
+
+        <section id="chatLog" class="chat-log" aria-live="polite"></section>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
