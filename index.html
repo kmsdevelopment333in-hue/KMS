@@ -1,53 +1,144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aditee AI Girl</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <main class="app">
-      <section class="stage">
-        <div id="avatarCard" class="avatar-card mood-happy">
-          <div class="office-bg"></div>
-          <div class="girl">
-            <div class="hair"></div>
-            <div class="head">
-              <div class="eyes"><span></span><span></span></div>
-              <div class="brows"><span></span><span></span></div>
-              <div class="mouth" id="mouth"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KMS Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo-wrap" aria-label="KMS logo">
+      <span class="logo-brace">{</span>
+      <span class="logo-main">KMS</span>
+      <span class="logo-brace">}</span>
+    </div>
+
+    <nav class="top-links" aria-label="Main links">
+      <a href="#" class="top-link login-link">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1Z"/>
+          </svg>
+        </span>
+        Login
+      </a>
+      <a href="#" class="top-link">Watch Try</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="fullpage-slider scroll-animate">
+      <button class="arrow left" id="prevSlide" aria-label="Previous slide">❮</button>
+
+      <div class="slider-window">
+        <div class="slider-track" id="sliderTrack">
+          <article class="slide card1">
+            <div>
+              <h2>Slider 1</h2>
+              <p>Explore trending content and quick updates across the platform.</p>
             </div>
-            <div class="body"></div>
-          </div>
-          <div class="fx" id="emotionFx">💖</div>
-          <div class="voice-wave" id="voiceWave"><span></span><span></span><span></span></div>
+            <button class="download-btn">Download</button>
+          </article>
+
+          <article class="slide card2">
+            <div>
+              <h2>Slider 2</h2>
+              <p>Watch Try sessions and learn directly from creators.</p>
+            </div>
+            <button class="download-btn">Download</button>
+          </article>
+
+          <article class="slide card3">
+            <div>
+              <h2>Slider 3</h2>
+              <p>Try new features with smooth full-page transitions.</p>
+            </div>
+            <button class="download-btn">Download</button>
+          </article>
+
+          <article class="slide card4">
+            <div>
+              <h2>Slider 4</h2>
+              <p>Jump into games and discover fresh challenges.</p>
+            </div>
+            <button class="download-btn">Download</button>
+          </article>
+
+          <article class="slide card5">
+            <div>
+              <h2>Slider 5</h2>
+              <p>Download bonus packs and special content instantly.</p>
+            </div>
+            <button class="download-btn">Download</button>
+          </article>
         </div>
-      </section>
+      </div>
 
-      <section class="panel">
-        <h1>Aditee AI Virtual Girl</h1>
-        <p class="subtitle">Lifelike animation • endless style • emotions • voice listening + cute voice answers</p>
+      <button class="arrow right" id="nextSlide" aria-label="Next slide">❯</button>
+    </section>
 
-        <div class="status">
-          <p><strong>Emotion:</strong> <span id="moodLabel">Happy</span></p>
-          <p><strong>Style:</strong> <span id="styleLabel">Office Elegant</span></p>
-          <p><strong>Listening:</strong> <span id="listenLabel">Off</span></p>
-        </div>
+    <section class="scroll-note scroll-animate">
+      <h3>Animated on Scroll</h3>
+      <p>Scroll down to trigger smooth fade and lift animation effects.</p>
+    </section>
 
-        <div class="controls">
-          <button id="styleBtn">✨ Next style</button>
-          <button id="moodBtn">😊 Next emotion</button>
-          <button id="listenBtn">🎤 Start listening</button>
-          <button id="speakBtn">🫧 Cute voice demo</button>
-        </div>
+    <section class="bottom-center-links scroll-animate">
+      <a href="#" class="bottom-link about-link">About</a>
+    </section>
+  </main>
 
-        <textarea id="chatInput" rows="3" placeholder="Talk to Aditee AI..."></textarea>
-        <button id="sendBtn" class="primary">Send</button>
+  <script>
+    const sliderTrack = document.getElementById('sliderTrack');
+    const slides = Array.from(sliderTrack.children);
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+    let currentIndex = 0;
 
-        <section id="chatLog" class="chat-log" aria-live="polite"></section>
-      </section>
-    </main>
-    <script src="app.js"></script>
-  </body>
+    function updateSlider() {
+      sliderTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      updateSlider();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlider();
+    });
+
+    let autoSlideTimer = setInterval(() => {
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlider();
+    }, 3000);
+
+    const sliderWindow = document.querySelector('.slider-window');
+
+    sliderWindow.addEventListener('mouseenter', () => {
+      clearInterval(autoSlideTimer);
+    });
+
+    sliderWindow.addEventListener('mouseleave', () => {
+      autoSlideTimer = setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateSlider();
+      }, 3000);
+    });
+
+    const animatedItems = document.querySelectorAll('.scroll-animate');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    animatedItems.forEach((item) => observer.observe(item));
+  </script>
+</body>
 </html>

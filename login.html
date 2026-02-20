@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KMS Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h1>KMS Login</h1>
+
+        <form>
+            <span class="icon"><ion-icon name="mail"></ion-icon></span>
+            <input type="email" placeholder="Email" required>
+
+            <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+            <input type="password" placeholder="Password" required>
+
+            <!-- Forgot password -->
+            <div class="forgot">
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <!-- Login button -->
+            <button type="submit" class="login-btn">Login</button>
+
+            <!-- Register -->
+            <p class="register">
+                Don't have an account? <a href="register.html">Register</a>
+            </p>
+
+        </form>
+
+        <head>
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+        </head>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script>
+            document.getElementById("loginForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // पेज रिफ्रेश रोकना
+
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+
+                // डेमो के लिए: सही ईमेल/पासवर्ड
+                if (email === "test@gmail.com" && password === "12345") {
+                    // लॉगिन सफल → होमपेज पर भेजना
+                    window.location.href = "home.html";
+                } else {
+                    alert("Invalid login details!");
+                }
+            });
+        </script>
+    </div>
+
+</body>
+
+</html>
