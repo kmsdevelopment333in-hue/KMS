@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders — FoodieHub</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        .orders-wrap { padding: 0 28px 64px; position: relative; z-index: 1; }
+
+        .empty-orders {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+            animation: fadeInUp 0.5s ease both;
+        }
+        .empty-orders .empty-icon { font-size: 4rem; display: block; margin-bottom: 16px; }
+        .empty-orders h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--text); margin-bottom: 8px; }
+        .empty-orders a {
+            display: inline-block;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: #000;
+            text-decoration: none;
+            padding: 13px 32px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(245,197,24,0.35);
+        }
+        .empty-orders a:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,197,24,0.5); }
+
+        .order-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease both;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .order-card:hover { border-color: rgba(245,197,24,0.2); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .order-id { font-weight: 700; color: var(--text); font-size: 0.95rem; }
+        .order-date { color: var(--muted); font-size: 0.82rem; }
+        .order-status {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .order-status.completed  { background: rgba(46,204,113,0.12); color: var(--green); border: 1px solid rgba(46,204,113,0.2); }
+        .order-status.pending    { background: rgba(245,197,24,0.12);  color: var(--gold);  border: 1px solid rgba(245,197,24,0.2); }
+        .order-status.failed     { background: rgba(255,71,87,0.12);   color: var(--red);   border: 1px solid rgba(255,71,87,0.2); }
+        .order-status.cancelled  { background: rgba(136,136,136,0.12); color: var(--muted); border: 1px solid rgba(136,136,136,0.2); }
+
+        .order-body { padding: 20px 24px; }
+
+        .order-items-list { margin-bottom: 16px; }
+        .order-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .order-item-row:last-child { border-bottom: none; }
+        .order-item-name { color: var(--text); font-weight: 500; }
+        .order-item-qty  { color: var(--muted); font-size: 0.82rem; margin-left: 8px; }
+        .order-item-price { color: var(--gold); font-weight: 600; }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .order-total { font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+        .order-delivery { color: var(--muted); font-size: 0.82rem; }
+
+        .order-actions { display: flex; gap: 10px; }
+
+        .btn-cancel {
+            background: rgba(255,71,87,0.1);
+            color: var(--red);
+            border: 1px solid rgba(255,71,87,0.25);
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-cancel:hover { background: var(--red); color: white; transform: scale(1.04); }
+
+        .btn-reorder {
+            background: linear-gradient(135deg, var(--accent), #5b4fcf);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-reorder:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(124,106,247,0.4); }
+
+        /* Confirm cancel modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            background: var(--dark2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.7);
+        }
+        .modal-box .modal-icon { font-size: 3rem; display: block; margin-bottom: 14px; }
+        .modal-box h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text); margin-bottom: 8px; }
+        .modal-box p  { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6; }
+        .modal-btns { display: flex; gap: 12px; justify-content: center; }
+        .btn-confirm-cancel {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-confirm-cancel:hover { background: #e8354a; transform: scale(1.04); }
+        .btn-keep {
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 12px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-keep:hover { border-color: var(--gold); color: var(--gold); }
+
+        @media (max-width: 600px) {
+            .orders-wrap { padding: 0 16px 40px; }
+            .order-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo"><h1>🍕 FoodieHub</h1></a>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Menu</a>
+                <a href="orders.html" class="nav-link active">Orders</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="help.html" class="nav-link">Help</a>
+            </nav>
+            <span id="header-user" class="header-user"></span>
+        </div>
+    </header>
+
+    <div class="page-hero">
+        <h2>My Orders</h2>
+        <p>Track and manage all your past orders</p>
+    </div>
+
+    <div class="orders-wrap container" id="orders-wrap"></div>
+
+    <!-- Cancel Confirm Modal -->
+    <div class="modal" id="cancel-modal">
+        <div class="modal-box">
+            <span class="modal-icon">⚠️</span>
+            <h3>Cancel Order?</h3>
+            <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+            <div class="modal-btns">
+                <button class="btn-confirm-cancel" id="confirm-cancel-btn">Yes, Cancel</button>
+                <button class="btn-keep" id="keep-btn">Keep Order</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // ===== AUTH CHECK =====
+        const user = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+        if (!user) { window.location.href = 'index.html'; }
+        else { document.getElementById('header-user').textContent = '👤 ' + user.name; }
+
+        // ===== NOTIFICATION =====
+        function notify(msg, type) {
+            const el = document.getElementById('notification');
+            el.textContent = msg;
+            el.className = 'notification ' + type + ' show';
+            clearTimeout(el._t);
+            el._t = setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // ===== LOAD ORDERS =====
+        function getOrders() {
+            try { return JSON.parse(localStorage.getItem('orders') || '[]'); } catch { return []; }
+        }
+        function saveOrders(orders) {
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso);
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function statusLabel(s) {
+            const map = { completed: '✅ Completed', pending: '⏳ Pending', failed: '❌ Failed', cancelled: '🚫 Cancelled' };
+            return map[s] || s;
+        }
+
+        let cancelTargetId = null;
+
+        function renderOrders() {
+            const wrap = document.getElementById('orders-wrap');
+            const orders = getOrders().reverse();
+
+            if (orders.length === 0) {
+                wrap.innerHTML = `
+                    <div class="empty-orders">
+                        <span class="empty-icon">🛒</span>
+                        <h3>No orders yet</h3>
+                        <p>Looks like you haven't ordered anything yet.</p>
+                        <a href="index.html">Browse Menu</a>
+                    </div>`;
+                return;
+            }
+
+            wrap.innerHTML = orders.map((order, i) => {
+                const items = order.items || [];
+                const delivery = order.delivery || {};
+                const canCancel = order.paymentStatus !== 'cancelled' && order.paymentStatus !== 'failed';
+
+                return `
+                <div class="order-card" style="animation-delay:${i * 0.07}s">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Order #${order.orderId}</div>
+                            <div class="order-date">${formatDate(order.timestamp)}</div>
+                        </div>
+                        <span class="order-status ${order.paymentStatus}">${statusLabel(order.paymentStatus)}</span>
+                    </div>
+                    <div class="order-body">
+                        <div class="order-items-list">
+                            ${items.map(item => `
+                                <div class="order-item-row">
+                                    <span>
+                                        <span class="order-item-name">${item.menuItem ? item.menuItem.name : 'Item'}</span>
+                                        <span class="order-item-qty">x${item.quantity}</span>
+                                    </span>
+                                    <span class="order-item-price">₹${item.subtotal}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${delivery.address ? `<div class="order-delivery">📍 ${delivery.name}, ${delivery.address}, ${delivery.city} — ${delivery.phone}</div>` : ''}
+                    </div>
+                    <div class="order-footer">
+                        <div class="order-total">Total: ₹${order.total}</div>
+                        <div class="order-actions">
+                            ${canCancel ? `<button class="btn-cancel" onclick="askCancel('${order.orderId}')">Cancel Order</button>` : ''}
+                            <button class="btn-reorder" onclick="reorder('${order.orderId}')">Reorder</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ===== CANCEL =====
+        function askCancel(orderId) {
+            cancelTargetId = orderId;
+            document.getElementById('cancel-modal').classList.add('active');
+        }
+
+        document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+            if (!cancelTargetId) return;
+            const orders = getOrders();
+            const idx = orders.findIndex(o => o.orderId === cancelTargetId);
+            if (idx !== -1) {
+                orders[idx].paymentStatus = 'cancelled';
+                saveOrders(orders);
+                notify('Order cancelled successfully.', 'success');
+                renderOrders();
+            }
+            document.getElementById('cancel-modal').classList.remove('active');
+            cancelTargetId = null;
+        });
+
+        document.getElementById('keep-btn').addEventListener('click', () => {
+            document.getElementById('cancel-modal').classList.remove('active');
+            cancelTargetId = null;
+        });
+
+        // ===== REORDER =====
+        function reorder(orderId) {
+            const orders = getOrders();
+            const order = orders.find(o => o.orderId === orderId);
+            if (!order) return;
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            order.items.forEach(item => {
+                const existing = cart.find(c => c.menuItem && c.menuItem.id === item.menuItem.id);
+                if (existing) {
+                    existing.quantity += item.quantity;
+                    existing.subtotal = existing.menuItem.price * existing.quantity;
+                } else {
+                    cart.push({ menuItem: item.menuItem, quantity: item.quantity, subtotal: item.subtotal });
+                }
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            notify('Items added to cart!', 'success');
+            setTimeout(() => window.location.href = 'index.html', 1200);
+        }
+
+        renderOrders();
+    </script>
+</body>
+</html>
